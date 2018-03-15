@@ -85,7 +85,15 @@ for (var i = 0; i < files.length; i++) {
   }
 }
 
-var output = solc.compile({ sources: sources }, argv.optimize ? 1 : 0);
+function findImports(path) {
+  try {
+    return { contents: fs.readFileSync(path).toString() }
+  } catch (e) {
+    return { error: e.message }
+  }
+}
+
+var output = solc.compile({ sources: sources }, argv.optimize ? 1 : 0, findImports);
 if (!output) {
   abort('No output from compiler');
 } else if (output['errors']) {
